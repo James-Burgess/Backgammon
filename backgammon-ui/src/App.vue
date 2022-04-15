@@ -1,54 +1,64 @@
 <template>
 <div class="board">
-  <div class="position" v-for="i in 24" :key="i">
-    <span class="chip player1"></span>
-    <span class="chip player2"></span>
-  </div>
+  <div v-for="(row, idx) in board.slice(1, -1)"
+       :key="row"
+       class="position"
+       :class="{'valid-move': row.length >= 1}"
+       v-html="createChipStack(row)"
+       @click="onChipSelected(idx)"
+  />
 </div>
 </template>
 
 <script>
 export default {
   name: 'backgammon',
+  data() {
+    return {
+      board: [
+        [], [0, 0], [], [], [], [], [1, 1, 1, 1, 1], [], [1, 1, 1], [], [], [], [0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1], [], [], [], [0, 0, 0], [], [0, 0, 0, 0, 0], [], [],[], [], [1, 1], []
+      ],
+      currentDice: {
+        roll1used: false,
+        roll1: null,
+        roll2: null,
+        roll2used: false,
+        isDouble: false
+      }
+    }
+  },
+  mounted() {
+    this.rollDice()
+    // Show the dice
+    // add concept of player turns
+  },
   methods: {
-    playGame() {
-      const emptyBoard = [[], [0, 0], [], [], [], [], [1, 1, 1, 1, 1], [], [1, 1, 1], [], [], [], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [], [], [], [0, 0, 0], [], [0, 0, 0, 0, 0], [], [],[], [], [1, 1], []]
-      this.drawBoard(emptyBoard)
-      this.rollDice()
-    },
     createChipStack(row) {
+      if (row.length === 0) return
+
       const player = row[0] === 1 ? 'player1' : 'player2'
       let ret = `<span class="chip ${player}">${row.length > 5 ? row.length - 5 : ''}</span>`
       ret += `<span class="chip ${player}"></span>`.repeat(Math.min(4, row.length - 1))
       return ret
     },
-    drawPosition(row) {
-      const pos = document.createElement('div')
-      pos.classList.add('position')
-
-      if (row.length >= 1) {
-        pos.classList.add('valid-move')
-        pos.addEventListener('click', function () {
-          console.log('here')
-          // [...board.querySelectorAll('.position')].map(el => el.classList.remove('selected'))
-          pos.classList.toggle('selected')
-        })
-        pos.innerHTML = createChipStack(row)
-      }
-      return pos
-    },
-    drawBoard(boardConfig) {
-      const board = document.querySelector('#board')
-      const playArea = boardConfig.slice(1, -1)
-
-      const positions = playArea.map(drawPosition)
-      positions.forEach((pos) => board.appendChild(pos))
-    },
     rollDice() {
-      const app = document.querySelector('#app')
-      const roll = Math.floor((Math.random() * 5) + 1)
-      app.innerHTML += `<h1 class="dice">${roll}</h1>`
-      return roll
+      const roll = () => Math.floor((Math.random() * 5) + 1)
+      this.currentDice.roll1 = roll()
+      this.currentDice.roll1Used = false
+      this.currentDice.roll2 = roll()
+      this.currentDice.roll2Used = false
+
+      this.currentDice.isDouble = this.currentDice.roll1 === this.currentDice.roll2
+
+    },
+    onChipSelected(index) {
+      const row = this.board[index+1]
+      if (row.length === 0) return
+
+      console.log(row)
+      // highlight row
+      // show available moves
     }
   }
 }
