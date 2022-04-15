@@ -9,11 +9,11 @@
 
 .board {
   background: linear-gradient(
-    90deg,
-    rgba(0,0,0,0) calc(50% - 16px),
-    saddlebrown calc(50% - 16px),
-    saddlebrown calc(50% - 3px),
-    rgba(0,0,0,0) calc(50% - 3px)
+                  90deg,
+                  rgba(0,0,0,0) calc(50% - 16px),
+                  saddlebrown calc(50% - 16px),
+                  saddlebrown calc(50% - 3px),
+                  rgba(0,0,0,0) calc(50% - 3px)
   );
   border: 10px solid saddlebrown;
   position: absolute;
